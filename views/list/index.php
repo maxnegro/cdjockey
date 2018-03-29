@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use app\models\PendingChanges;
 use yii\bootstrap\Alert;
+use nirvana\showloading\ShowLoadingAsset;
+ShowLoadingAsset::register($this);
 
 
 /* @var $this yii\web\View */
@@ -20,7 +22,7 @@ if (PendingChanges::hasPendingChanges() > 0) {
   ]);
 
   echo 'È necessario rigenerare la configurazione del server. ';
-  echo Html::a(Yii::t('app', 'Genera'), ['generate'], ['class' => 'btn btn-success']);
+  echo Html::a(Yii::t('app', 'Genera'), ['generate'], ['class' => 'btn btn-success', 'onclick' => '$(\'#wrap\').showLoading()']);
 
   Alert::end();
 }
