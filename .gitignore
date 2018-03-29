@@ -34,3 +34,8 @@ tests/_support/_generated
 
 #sqlite database
 /db
+
+#generated configurations
+/generated
+
+/.Trash-1000
