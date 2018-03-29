@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Isomap */
 
-$this->title = Yii::t('app', 'Create Isomap');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Isomaps'), 'url' => ['index']];
+$this->title = Yii::t('app', 'Aggiungi condivisione');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Condivisioni'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="isomap-create">

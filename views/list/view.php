@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model app\models\Isomap */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Isomaps'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Condivisioni'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="isomap-view">
