@@ -64,21 +64,31 @@ class ListController extends Controller
               'defaultOrder' => [
                 'isofile' => SORT_ASC,
               ],
+              'sortParam' => 'isomap-sort',
             ],
+            'pagination' => [
+              'pageParam' => 'isomap-page',
+            ],
+
         ]);
 
+        $orphansDataProvider = new ArrayDataProvider([
+          'allModels' => Isomap::getOrphans(),
+          'key' => 'isofile',
+          'sort' => [
+            'attributes' => ['isofile'],
+            'defaultOrder' => [
+              'isofile' => SORT_ASC,
+            ],
+            'sortParam' => 'orphans-sort',
+          ],
+          'pagination' => [
+            'pageParam' => 'orphans-page',
+          ],
+        ]);
         return $this->render('index', [
             'dataProvider' => $dataProvider,
-            'orphans' => new ArrayDataProvider([
-              'allModels' => Isomap::getOrphans(),
-              'key' => 'isofile',
-              'sort' => [
-                'attributes' => ['isofile'],
-                'defaultOrder' => [
-                  'isofile' => SORT_ASC,
-                ],
-              ],
-            ]),
+            'orphans' => $orphansDataProvider,
         ]);
     }
 
