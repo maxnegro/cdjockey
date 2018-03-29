@@ -32,6 +32,9 @@ tests/_support/_generated
 #vagrant folder
 /.vagrant
 
+#local config
+/.env
+
 #sqlite database
 /db
 

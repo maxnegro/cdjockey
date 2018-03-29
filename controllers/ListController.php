@@ -36,8 +36,9 @@ class ListController extends Controller
               'rules' => [
                   // deny all POST requests
                   [
-                      'allow' => false,
-                      'verbs' => ['POST']
+                      'allow' => true,
+                      'verbs' => ['POST'],
+                      'roles' => ['@'],
                   ],
                   // allow authenticated users
                   [
