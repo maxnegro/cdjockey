@@ -68,6 +68,7 @@ class ListController extends Controller
             ],
             'pagination' => [
               'pageParam' => 'isomap-page',
+              'pageSize' => 20,
             ],
 
         ]);
@@ -84,6 +85,7 @@ class ListController extends Controller
           ],
           'pagination' => [
             'pageParam' => 'orphans-page',
+            'pageSize' => 10,
           ],
         ]);
         return $this->render('index', [
