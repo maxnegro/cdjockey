@@ -8,6 +8,7 @@ $config = [
     'name' => 'ISO Manager',
     'language' => env('LANGUAGE'),
     'basePath' => dirname(__DIR__),
+    'defaultRoute' => 'list/index',
     'bootstrap' => ['log'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -36,11 +37,11 @@ $config = [
             'useFileTransport' => true,
         ],
         'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
+            'traceLevel' => YII_ENV_DEV ? 3 : 0,
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
+                    'levels' => ['error', 'warning', 'info'],
                 ],
             ],
         ],

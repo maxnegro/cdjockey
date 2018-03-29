@@ -4,11 +4,13 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Isomap;
+use app\models\PendingChanges;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\data\ArrayDataProvider;
+use yii\helpers\BaseStringHelper;
 
 
 /**
@@ -27,6 +29,23 @@ class ListController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                 ],
+            ],
+            'access' => [
+              'class' => \yii\filters\AccessControl::className(),
+              'only' => ['create', 'update', 'delete', 'generate'],
+              'rules' => [
+                  // deny all POST requests
+                  [
+                      'allow' => false,
+                      'verbs' => ['POST']
+                  ],
+                  // allow authenticated users
+                  [
+                      'allow' => true,
+                      'roles' => ['@'],
+                  ],
+                  // everything else is denied
+              ],
             ],
         ];
     }
@@ -71,13 +90,16 @@ class ListController extends Controller
     public function actionCreate($id = NULL)
     {
         $model = new Isomap();
-        if (!empty($id)) {
-          $model->isofile = $id;
-        }
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
+
+        if (!empty($id)) {
+          $model->isofile = $id;
+          $model->sharename = BaseStringHelper::basename($model->isofile, '.iso');
+        }
+        $model->enable=1;
 
         return $this->render('create', [
             'model' => $model,
@@ -96,7 +118,7 @@ class ListController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
@@ -116,6 +138,12 @@ class ListController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionGenerate() {
+      PendingChanges::clearPendingChanges();
+      Isomap::generateAutoFsMap();
+      return $this->redirect(['index']);
     }
 
     /**

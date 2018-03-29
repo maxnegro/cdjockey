@@ -2,12 +2,28 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use app\models\PendingChanges;
+use yii\bootstrap\Alert;
+
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('app', 'Lista condivisioni');
 $this->params['breadcrumbs'][] = $this->title;
+
+if (PendingChanges::hasPendingChanges() > 0) {
+  Alert::begin([
+    'options' => [
+        'class' => 'alert-warning',
+    ],
+  ]);
+
+  echo 'È necessario rigenerare la configurazione del server. ';
+  echo Html::a(Yii::t('app', 'Genera'), ['generate'], ['class' => 'btn btn-success']);
+
+  Alert::end();
+}
 ?>
 <div class="isomap-index">
 
@@ -42,8 +58,9 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'class' => 'yii\grid\ActionColumn',
               'headerOptions' => [
-                'style' => 'width: 5em;',
+                'style' => 'width: 4em;',
               ],
+              'template' => '{update} {delete}',
             ],
         ],
     ]); ?>
@@ -56,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
         [
           'class' => 'yii\grid\ActionColumn',
           'headerOptions' => [
-            'style' => 'width: 5em;',
+            'style' => 'width: 4em;',
           ],
           'template' => '{create}',
           'buttons' => [

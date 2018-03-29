@@ -4,6 +4,7 @@ namespace app\models;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\helpers\BaseStringHelper;
+use app\models\PendingChanges;
 
 /**
  * This is the model class for table "isomap".
@@ -36,9 +37,8 @@ class Isomap extends \yii\db\ActiveRecord
             ['isofile', 'unique'],
             ['isofile', 'required'],
             ['enable', 'boolean'],
-            [['lastupdated'], 'safe'],
-            // [['lastupdated'], 'datetime'],
-            [['fileExists'], 'safe'],
+            ['enable', 'filter', 'filter' => 'intval'],
+            [['lastupdated', 'fileExists'], 'safe'],
         ];
     }
 
@@ -99,5 +99,60 @@ class Isomap extends \yii\db\ActiveRecord
         }
       }
       return $_orphans;
+    }
+
+    /**
+     * Generate autofs map file and link factory
+     *
+     * @return return void
+     */
+    public static function generateAutoFsMap() {
+      exec(sprintf('rm %s/*', Yii::getAlias(env('IMAGELINKS'))));
+      $autofsOutFile = fopen(Yii::getAlias(env('GENERATED') . '/auto.isosrv'), 'w' );
+      fwrite($autofsOutFile, "# Generated automatically. Do not edit. It will be rewritten.\n#\n");
+      $sambaOutFile = fopen(Yii::getAlias(env('GENERATED') . '/smb-iso.conf'), 'w' );
+      fwrite($sambaOutFile, "# Generated automatically. Do not edit. It will be rewritten.\n#\n");
+      foreach (Isomap::find()->where(['enable' => 1])->all() as $model) {
+        if ($model->fileExists) {
+          // $baseFilename = BaseStringHelper::basename($model->isofile, '.iso');
+          $baseFilename = $model->sharename;
+          // Generate autofs line
+          fwrite($autofsOutFile, sprintf(
+            "%s\t-fstype=iso9660,ro,loop\t:%s/%s\n",
+            $baseFilename,
+            Yii::getAlias('@isoImages'),
+            $model->isofile
+          ));
+          // Create link
+          // exec(sprintf('ln -s %s %s', Yii::getAlias(env('IMAGEMOUNTS') . '/' . $baseFilename), Yii::getAlias(env('IMAGELINKS') . '/' . $baseFilename) ));
+          // Generate smb.conf lines
+          fwrite($sambaOutFile, sprintf("[%s]\n", $model->sharename));
+          fwrite($sambaOutFile, sprintf("comment = %s\n", $model->sharedesc));
+          fwrite($sambaOutFile, sprintf("path = %s\n", Yii::getAlias(env('IMAGEMOUNTS')) . '/' . $baseFilename));
+          fwrite($sambaOutFile, sprintf("public = yes\n"));
+          fwrite($sambaOutFile, sprintf("writable = no\n"));
+          fwrite($sambaOutFile, sprintf("printable = no\n"));
+          fwrite($sambaOutFile, sprintf("\n"));
+        }
+      }
+      fclose($autofsOutFile);
+      fclose($sambaOutFile);
+      exec('sudo service autofs restart');
+      exec('sudo service smbd restart');
+      exec('sudo service nmbd restart');
+    }
+
+    public function afterSave($insert, $changedAttributes) {
+      parent::afterSave($insert, $changedAttributes);
+      // Isomap::generateAutoFsMap();
+      if (!empty($changedAttributes)) {
+        PendingChanges::setPendingChanges();
+      }
+    }
+
+    public function afterDelete() {
+      parent::afterDelete();
+      // Isomap::generateAutoFsMap();
+      PendingChanges::setPendingChanges();
     }
 }
