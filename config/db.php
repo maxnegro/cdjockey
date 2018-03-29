@@ -4,8 +4,8 @@ if (YII_ENV_PROD) {
   return [
       'class' => 'yii\db\Connection',
       'dsn' => 'mysql:host=localhost;dbname=cdjockey',
-      'username' => 'root',
-      'password' => 'root',
+      'username' => 'cdjockey',
+      'password' => 'cdjockey',
       'charset' => 'utf8',
 
       // Schema cache options (for production environment)
@@ -17,8 +17,8 @@ if (YII_ENV_PROD) {
   return [
       'class' => 'yii\db\Connection',
       'dsn' => 'mysql:host=localhost;dbname=cdjockey',
-      'username' => 'root',
-      'password' => '',
+      'username' => 'cdjockey',
+      'password' => 'cdjockey',
       'charset' => 'utf8',
 
       // Schema cache options (for production environment)
