@@ -59,6 +59,12 @@ class ListController extends Controller
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Isomap::find(),
+            'sort' => [
+              'attributes' => ['isofile', 'sharename', 'lastupdated'],
+              'defaultOrder' => [
+                'isofile' => SORT_ASC,
+              ],
+            ],
         ]);
 
         return $this->render('index', [
@@ -68,9 +74,9 @@ class ListController extends Controller
               'key' => 'isofile',
               'sort' => [
                 'attributes' => ['isofile'],
-                // 'defaultOrder' => [
-                //   'isofile' => SORT_ASC,
-                // ],
+                'defaultOrder' => [
+                  'isofile' => SORT_ASC,
+                ],
               ],
             ]),
         ]);
