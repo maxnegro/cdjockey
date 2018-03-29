@@ -66,6 +66,12 @@ class ListController extends Controller
             'orphans' => new ArrayDataProvider([
               'allModels' => Isomap::getOrphans(),
               'key' => 'isofile',
+              'sort' => [
+                'attributes' => ['isofile'],
+                // 'defaultOrder' => [
+                //   'isofile' => SORT_ASC,
+                // ],
+              ],
             ]),
         ]);
     }
