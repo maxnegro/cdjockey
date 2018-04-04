@@ -44,7 +44,10 @@ if (PendingChanges::hasPendingChanges() > 0) {
             return ['class' => 'info'];
           } elseif ( !$model->enable and $model->fileExists ) {
             return ['class' => 'warning'];
+          } elseif ( !$model->fileIsInSync ) {
+            return ['class' => 'danger'];
           }
+          return [];
         },
         'columns' => [
             // ['class' => 'yii\grid\SerialColumn'],

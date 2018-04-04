@@ -38,7 +38,7 @@ class Isomap extends \yii\db\ActiveRecord
             ['isofile', 'required'],
             ['enable', 'boolean'],
             ['enable', 'filter', 'filter' => 'intval'],
-            [['lastupdated', 'fileExists'], 'safe'],
+            [['lastupdated', 'fileExists', 'fileIsInSync'], 'safe'],
             // ['lastupdated', 'integer'],
         ];
     }
@@ -63,6 +63,7 @@ class Isomap extends \yii\db\ActiveRecord
             'lastupdated' => Yii::t('app', 'Ultima modifica'),
             'enable' => Yii::t('app', 'Abilitato'),
             'fileExists' => Yii::t('app', 'File presente'),
+            'fileIsInSync' => Yii::t('app', 'File sincronizzato'),
         ];
     }
 
@@ -166,6 +167,16 @@ class Isomap extends \yii\db\ActiveRecord
 
       // ...custom code here...
       return true;
+    }
+
+    /**
+     * Calculated field: iso file is in sync
+     *
+     * @return return bool
+     */
+    public function getFileIsInSync() {
+      // return (Yii::getAlias('@isoImages') . '/' . $this->isofile) ;
+      return filemtime(Yii::getAlias('@isoImages') . '/' . $this->isofile) === $this->lastupdated ? 1 : 0;
     }
 
 }
