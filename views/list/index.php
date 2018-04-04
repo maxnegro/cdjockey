@@ -44,19 +44,23 @@ if (PendingChanges::hasPendingChanges() > 0) {
             return ['class' => 'info'];
           } elseif ( !$model->enable and $model->fileExists ) {
             return ['class' => 'warning'];
-          } elseif ( !$model->fileIsInSync ) {
-            return ['class' => 'danger'];
           }
           return [];
         },
         'columns' => [
-            // ['class' => 'yii\grid\SerialColumn'],
-
-            // 'id',
             'isofile:ntext',
             'sharename:ntext',
             'sharedesc:ntext',
-            'lastupdated:datetime',
+            [
+              'attribute' => 'lastupdated',
+              'contentOptions' => function($model, $key, $index, $column) {
+                if (!$model->fileIsInSync) {
+                  return ['class' => 'danger'];
+                }
+                return [];
+              },
+            'format' =>  'datetime',
+            ],
             'enable:boolean',
             'fileExists:boolean',
 
@@ -65,6 +69,7 @@ if (PendingChanges::hasPendingChanges() > 0) {
               'headerOptions' => [
                 'style' => 'width: 4em;',
               ],
+              'contentOptions' => ['class' => 'text-center'],
               'template' => '{update} {delete}',
             ],
         ],
@@ -80,6 +85,7 @@ if (PendingChanges::hasPendingChanges() > 0) {
           'headerOptions' => [
             'style' => 'width: 4em;',
           ],
+          'contentOptions' => ['class' => 'text-center'],
           'template' => '{create}',
           'buttons' => [
             'create' => function($url, $model, $key) {
