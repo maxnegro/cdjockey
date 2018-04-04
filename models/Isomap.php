@@ -39,6 +39,7 @@ class Isomap extends \yii\db\ActiveRecord
             ['enable', 'boolean'],
             ['enable', 'filter', 'filter' => 'intval'],
             [['lastupdated', 'fileExists'], 'safe'],
+            // ['lastupdated', 'integer'],
         ];
     }
 
@@ -155,4 +156,16 @@ class Isomap extends \yii\db\ActiveRecord
       // Isomap::generateAutoFsMap();
       PendingChanges::setPendingChanges();
     }
+
+    public function beforeSave($insert)
+    {
+      if (!parent::beforeSave($insert)) {
+          return false;
+      }
+      $this->lastupdated = filemtime(Yii::getAlias('@isoImages') . '/' . $this->isofile);
+
+      // ...custom code here...
+      return true;
+    }
+
 }
